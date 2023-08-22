@@ -1,5 +1,5 @@
 import CartContext from "./cart-context";
-import { useState } from "react";
+import { useState , useEffect,useCallback} from "react";
 
 const CartProvider = props => {
     const [medicineItem, setMedicineItem] = useState([]);
@@ -8,6 +8,16 @@ const CartProvider = props => {
     const addProductHandler = (product) => {
         setMedicineItem(preProduct => {
             return [...preProduct,product];
+        })
+        fetch(`https://crudcrud.com/api/1e70b818736f4d9bb5c045545ba4378c/product`, {
+            method:'POST',
+            body: JSON.stringify({
+                ...product
+            }),
+            headers: {
+                'Content-Type':'application/json',
+                'Accept':'application/json'
+            }
         })
     }
     const addProductCartHandler = (product) => {
@@ -26,10 +36,9 @@ const CartProvider = props => {
                 medicineItem[medicineIndex].quantity -= 1;
                 cartItems[index].amount += 1;
                 setCartItems([...cartItems]);
-               
               }
-        setCartItems([...cartItems])
-    }
+        }
+        // setCartItems([...cartItems])
     const removeProductCartHandler = id => {
         const index = cartItems.findIndex(ct => ct.id === id);
         if(index !== -1) {
@@ -52,7 +61,8 @@ const CartProvider = props => {
         totalAmount: 0,
         addProduct: addProductHandler,
         addProductCart: addProductCartHandler,
-        removeProductCart:removeProductCartHandler
+        removeProductCart:removeProductCartHandler,
+        receivedItems: cartItems,
     }
     return (
         <CartContext.Provider value={cartContext}>
