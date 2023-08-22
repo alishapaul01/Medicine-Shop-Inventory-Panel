@@ -33,9 +33,7 @@ const Cart = props =>{
       cartItemCtx.cartItems.forEach(item => {
         const sum = Number(item.amount) * Number(item.price)
         totalAmount = totalAmount + sum ;
-        
     });
-      
     return (
         <Modal onClose={props.onClose}>
             {cartItems}

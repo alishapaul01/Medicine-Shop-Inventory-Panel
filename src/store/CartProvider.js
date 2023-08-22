@@ -1,3 +1,4 @@
+import axios from "axios";
 import CartContext from "./cart-context";
 import { useState , useEffect,useCallback} from "react";
 
@@ -9,7 +10,7 @@ const CartProvider = props => {
         setMedicineItem(preProduct => {
             return [...preProduct,product];
         })
-        fetch(`https://crudcrud.com/api/1e70b818736f4d9bb5c045545ba4378c/product`, {
+        fetch(`https://crudcrud.com/api/8ddb90e2dfa043e99640cc4610d8c51a/product`, {
             method:'POST',
             body: JSON.stringify({
                 ...product
@@ -37,8 +38,9 @@ const CartProvider = props => {
                 cartItems[index].amount += 1;
                 setCartItems([...cartItems]);
               }
+              setCartItems([...cartItems])
         }
-        // setCartItems([...cartItems])
+
     const removeProductCartHandler = id => {
         const index = cartItems.findIndex(ct => ct.id === id);
         if(index !== -1) {
@@ -54,7 +56,19 @@ const CartProvider = props => {
         }
         setCartItems([...cartItems])
     }
-    
+
+    const receivedItems = useCallback(() => {
+      fetch(`https://crudcrud.com/api/8ddb90e2dfa043e99640cc4610d8c51a/product`)
+      .then(res=> res.json())
+      .then(data => 
+       setMedicineItem(data))
+     },[])
+
+    useEffect(() => {
+       receivedItems();
+    },[receivedItems])
+
+
     const cartContext = {
         products: medicineItem,
         cartItems:cartItems,
